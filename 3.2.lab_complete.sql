@@ -1,7 +1,11 @@
 USE sakila;
 #1. How many copies of the film _Hunchback Impossible_ exist in the inventory system?
-SELECT COUNT(inventory_id) as number_of_copies, (SELECT title FROM sakila.film WHERE title='Hunchback Impossible') as 'title'
-FROM sakila.inventory;
+select count(i.inventory_id) as Copies
+from inventory i
+where film_id = (
+	select film_id
+    from sakila.film
+	where title = 'Hunchback Impossible');
 # 2. List all films whose length is longer than the average of all the films.
 SELECT title, length FROM film
 WHERE length > (SELECT avg(length) FROM film) ORDER BY length desc;
@@ -55,6 +59,8 @@ where customer_id in (
     from rental
     where RENTAL_ID IN( SELECT rental_id FROM sakila.payment 
     where payment.amount > (select avg(payment.amount) from payment)));
+    
+    
 /*SELECT CONCAT(first_name,' ' ,last_name) AS 'customer_name' FROM sakila.customer
 WHERE customer_id IN (
 SELECT customer_id FROM sakila.payment
